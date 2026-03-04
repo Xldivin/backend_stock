@@ -36,8 +36,14 @@ if (!parsed.success) {
   throw new Error(`Invalid environment variables: ${message}`);
 }
 
+const normalizeOrigin = (origin: string) =>
+  origin
+    .trim()
+    .replace(/^"+|"+$/g, "")
+    .replace(/\/+$/g, "");
+
 const corsOrigins = parsed.data.CORS_ORIGIN.split(",")
-  .map((origin) => origin.trim())
+  .map((origin) => normalizeOrigin(origin))
   .filter(Boolean);
 
 export const env = {

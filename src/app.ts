@@ -8,12 +8,40 @@ import { apiRouter } from "./routes";
 
 export const app = express();
 
+const normalizeOrigin = (origin: string) => origin.replace(/\/+$/g, "");
+
+const corsOptions: cors.CorsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+
+    const normalizedOrigin = normalizeOrigin(origin);
+    const isExactAllowed = env.corsOrigins.includes(normalizedOrigin);
+    const isVercelPreviewAllowed = env.corsOrigins.some(
+      (allowedOrigin) =>
+        allowedOrigin.startsWith("https://*.vercel.app") &&
+        normalizedOrigin.startsWith("https://") &&
+        normalizedOrigin.endsWith(".vercel.app"),
+    );
+
+    if (isExactAllowed || isVercelPreviewAllowed) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
 app.use(
-  cors({
-    origin: env.corsOrigins,
-    credentials: true,
-  }),
+  cors(corsOptions),
 );
+app.options("*", cors(corsOptions));
 
 app.use(
   rateLimit({
