@@ -1,0 +1,74 @@
+@baseUrl = http://localhost:4000/api
+@contentType = application/json
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbW1hZ2hsdHMwMDAwdmtrZzhsNm45NWVhIiwiZW1haWwiOiJqb2huQGV4YW1wbGUuY29tIiwiand0VmVyc2lvbiI6MCwiaWF0IjoxNzcyNTMzMjI4LCJleHAiOjE3NzI1MzY4Mjh9.-tkQ8m7WzNbvvScT9CGVFTE8ISJrO5LCXxVVDXGdOOM
+@productId = cmmai4xvd0001vkkg44bchr17
+# @reservationId = REPLACE_WITH_RESERVATION_CUID
+
+### Health
+GET {{baseUrl}}/health
+
+### DB Health
+GET {{baseUrl}}/health/db
+
+### Register
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "name": "jean",
+  "email": "jean.ishimwepaul@gmail.com",
+  "password": "StrongPass123"
+}
+
+### Login
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "john@example.com",
+  "password": "StrongPass123"
+}
+
+### Create Product
+POST {{baseUrl}}/products
+Content-Type: {{contentType}}
+
+{
+  "sku": "SKU-001",
+  "name": "Limited Item",
+  "description": "Drop item",
+  "stock": 10
+}
+
+### List Products (pagination/filter/sort)
+GET {{baseUrl}}/products?page=1&limit=20&sortBy=createdAt&sortOrder=desc&name=Item&minStock=0&maxStock=100
+
+### Reserve (Auth required)
+POST {{baseUrl}}/reserve
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "productId": "{{productId}}",
+  "quantity": 2
+}
+
+# ### Checkout (Auth required)
+# POST {{baseUrl}}/checkout
+# Content-Type: {{contentType}}
+# Authorization: Bearer {{token}}
+
+# {
+#   "reservationId": "{{reservationId}}"
+# }
+
+### List Reservations (Auth required)
+# GET {{baseUrl}}/reservations?page=1&limit=20&sortBy=createdAt&sortOrder=desc&status=ACTIVE&productId={{productId}}
+# Authorization: Bearer {{token}}
+
+### List Orders (Auth required)
+# GET {{baseUrl}}/orders?page=1&limit=20&sortBy=createdAt&sortOrder=desc&status=CONFIRMED
+# Authorization: Bearer {{token}}
+
+### List Inventory Logs
+# GET {{baseUrl}}/inventory-logs?page=1&limit=20&sortBy=createdAt&sortOrder=desc&productId={{productId}}&eventType=RESERVE
