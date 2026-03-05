@@ -2,6 +2,7 @@
 @contentType = application/json
 @productId = cmmai4xvd0001vkkg44bchr17
 @reservationId = REPLACE_WITH_RESERVATION_CUID
+@guestId = device-laptop-001
 
 ### Health
 GET {{baseUrl}}/health
@@ -29,6 +30,7 @@ GET {{baseUrl}}/products?page=1&limit=20&sortBy=createdAt&sortOrder=desc&name=It
 ### Reserve
 POST {{baseUrl}}/reserve
 Content-Type: {{contentType}}
+X-Guest-Id: {{guestId}}
 
 {
   "productId": "{{productId}}",
@@ -38,6 +40,7 @@ Content-Type: {{contentType}}
 ### Checkout
 POST {{baseUrl}}/checkout
 Content-Type: {{contentType}}
+X-Guest-Id: {{guestId}}
 
 {
   "reservationId": "{{reservationId}}"
@@ -45,9 +48,11 @@ Content-Type: {{contentType}}
 
 ### List Reservations
 GET {{baseUrl}}/reservations?page=1&limit=20&sortBy=createdAt&sortOrder=desc&status=ACTIVE&productId={{productId}}
+X-Guest-Id: {{guestId}}
 
 ### List Orders
 GET {{baseUrl}}/orders?page=1&limit=20&sortBy=createdAt&sortOrder=desc&status=CONFIRMED
+X-Guest-Id: {{guestId}}
 
 ### List Inventory Logs
 GET {{baseUrl}}/inventory-logs?page=1&limit=20&sortBy=createdAt&sortOrder=desc&productId={{productId}}&eventType=RESERVE
