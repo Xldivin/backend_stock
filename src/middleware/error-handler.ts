@@ -40,10 +40,13 @@ export const errorHandler = (error: unknown, req: Request, res: Response, _next:
 
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     const isTransactionTimeout = error.code === "P2028";
+    const isTransactionConflict = error.code === "P2034";
     const statusCode = isTransactionTimeout ? 503 : 409;
     const message = isTransactionTimeout
       ? "Temporary transaction timeout. Please retry."
-      : "Database constraint violation";
+      : isTransactionConflict
+        ? "This item was just reserved by another user. Please refresh and try again."
+        : "Database constraint violation";
 
     logger.error("prisma_error", {
       code: error.code,
